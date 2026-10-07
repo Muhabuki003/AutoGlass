@@ -485,7 +485,8 @@ footer ul li{margin-bottom:7px}
 "use strict";
 
 var SLUG = "auto-glass-services-houston";
-var API  = "/lab/pitch-api/chat";
+/* TODO: replace with your deployed Worker URL (see worker/README.md, step 4). */
+var API  = "https://autoglass-chat.YOUR-SUBDOMAIN.workers.dev";
 var PHONE = "832-260-6396";
 
 /* The E.164 form is built at runtime on purpose: writing a literal
@@ -735,6 +736,7 @@ var chat = (function(){
   var sugWrap = document.getElementById("aiSuggest");
   var greetingEl = null;
   var busy = false, touched = false;
+  var history = []; /* last turns, sent so the model remembers the conversation */
 
   function el(tag, cls, txt){
     var n = document.createElement(tag);
@@ -803,7 +805,8 @@ var chat = (function(){
       slug: SLUG,
       message: marker + " " + text,
       session: sid,
-      lang: lang
+      lang: lang,
+      history: history.slice(-8)
     };
 
     var ctrl = ("AbortController" in window) ? new AbortController() : null;
@@ -818,7 +821,11 @@ var chat = (function(){
     .then(function(r){ return r.json().catch(function(){ return {ok:false}; }); })
     .then(function(j){
       if(typing.parentNode) typing.remove();
-      if(j && j.ok && j.reply){ say("bot", j.reply); }
+      if(j && j.ok && j.reply){
+        say("bot", j.reply);
+        history.push({role:"user", content:text}, {role:"assistant", content:j.reply});
+        if(history.length > 16) history = history.slice(-16);
+      }
       else { say("err", t("ai.fail")); }
     })
     .catch(function(){

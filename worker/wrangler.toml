@@ -1,0 +1,11 @@
+name = "autoglass-chat"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Your new tunnel hostname (set this after step 3 in README.md)
+UPSTREAM_URL = "https://llm.yourdomain.com"
+# Your site's origin, e.g. "https://autoglass.example.com". Use "*" only while testing.
+ALLOWED_ORIGIN = "*"
+
+# Secret, set with: npx wrangler secret put GATE_TOKEN

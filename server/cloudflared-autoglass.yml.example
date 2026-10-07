@@ -1,0 +1,9 @@
+# Separate tunnel for AutoGlass. Leave /etc/cloudflared/lazusai-config.yaml untouched.
+# Save as /etc/cloudflared/autoglass-config.yaml
+tunnel: autoglass-llm
+credentials-file: /root/.cloudflared/<TUNNEL-ID>.json
+
+ingress:
+  - hostname: llm.yourdomain.com
+    service: http://127.0.0.1:11435   # the gate, NOT Ollama (11434)
+  - service: http_status:404

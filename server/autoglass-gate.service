@@ -1,0 +1,17 @@
+[Unit]
+Description=AutoGlass Ollama token gate
+After=network.target ollama.service
+
+[Service]
+# Put GATE_TOKEN=... (and optionally MODEL=...) in this file, chmod 600
+EnvironmentFile=/etc/autoglass-gate.env
+ExecStart=/usr/bin/node /opt/autoglass-gate/ollama-gate.mjs
+Restart=always
+User=nobody
+Group=nogroup
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
